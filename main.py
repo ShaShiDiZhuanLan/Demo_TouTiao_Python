@@ -4,7 +4,7 @@ Author: 沙振宇
 Update Time: 2019-12-24
 Info: 数据整理（先获取全部数据，再过滤）
     # 1、获取来源__今日头条为数据来源：https://www.toutiao.com/
-    # 2、抓取内容__搜索表达式 关键字（人工智能 or AI ）and（失业）时间为 2019年
+    # 2、抓取内容__搜索表达式(时间为 2019年12月25)
     # 3、数据处理__然后先初步看下这样抓取下来的新闻内容是什么，条数是多少
     # 4、词频统计__对这些新闻内容进行分词，然后词频统计。
 """
@@ -58,7 +58,7 @@ class TouTiao:
         # print('now:', now)  # 获取当前计算机时间
         time_local = time.localtime(now)
         dt = time.strftime("%Y-%m-%d %H:%M:%S", time_local)
-        # print('时间:', dt)  # 获取当前时间
+        print('时间:', dt)  # 获取当前时间
         e = hex(int(now)).upper()[2:]  # hex()转换一个整数对象为16进制的字符串表示
         a = hashlib.md5()  # hashlib.md5().hexdigest()创建hash对象并返回16进制结果
         a.update(str(int(now)).encode('utf-8'))
@@ -117,44 +117,35 @@ class TouTiao:
 
     def main(self, max_behot_time, title, source_url, total_url, source, media_url):  # 主函数
         # 此处的数字类似于你刷新新闻的次数，正常情况下刷新一次会出现10条新闻，但夜存在少于10条的情况；所以最后的结果并不一定是10的倍数
+        time_2019_12_26_00_00_00 = 1577289600   # 2019/12/26 00: 00:00
+        time_2019_12_25_00_00_00 = 1577203200   # 2019/12/25 00: 00:00
+        cur_time = time_2019_12_25_00_00_00
 
-        # 1577175580 - 2019 / 12 / 24 16: 19:40
-        # 1577116800 - 2019 / 12 / 24 00: 00:00
-        # 1575129600 - 2019 / 12 / 01 00: 00:00
-        # 1559318400 - 2019 / 06 / 01 00: 00:00
-        # 1546272000 - 2019 / 01 / 01 00: 00:00
-
-        time_2019_12_01_00_00_00 = 1575129600   # 2019/12/01 00: 00:00
-        time_2019_12_24_00_00_00 = 1577116800   # 2019/12/24 00: 00:00
-        cur_time = time_2019_12_01_00_00_00
-
-        while cur_time < time_2019_12_24_00_00_00:
-            cur_time = cur_time + 3 # 每3秒过滤一下
-            # print("cur_time:",cur_time)
+        while cur_time < time_2019_12_26_00_00_00:
+            cur_time = cur_time + 30 # 隔30秒过滤一下
             ascp = self.get_as_cp(cur_time)  # 获取as和cp参数的函数
             demo = self.getdata(
                 self.start_url + max_behot_time + '&max_behot_time_tmp=' + max_behot_time + '&tadrequire=true&as=' + ascp['as'] + '&cp=' + ascp['cp'], self.headers, self.cookies)
-            # print("demo:",demo)
+            print("demo:",demo)
             if 'data' in demo:
                 for j in range(len(demo['data'])):
                     title_tmp = demo['data'][j]['title']
-                    if '失业' in title_tmp:
-                        time_local = time.localtime(cur_time)
-                        dt = time.strftime("%Y-%m-%d %H:%M:%S", time_local)
-                        print('时间:%s %s', (dt,cur_time))  # 获取当前时间
-                        if ('人工智能' in title_tmp) or ('AI' in title_tmp) or ('ai' in title_tmp):
-                            if demo['data'][j]['title'] not in title:
-                                title.append(demo['data'][j]['title'])  # 获取新闻标题
-                                source_url.append(demo['data'][j]['source_url'])  # 获取新闻链接
-                                url_gzh = demo['data'][j]['source']
-                                source.append(url_gzh)  # 获取发布新闻的公众号
-                                print('title_data:', demo['data'][j]['title'])
-                                print("url_gzh:",url_gzh)
-                                if url_gzh not in media_url:
-                                    media_url[url_gzh] = self.url + demo['data'][j]['media_url']  # 获取公众号链接
+                    # if '失业' in title_tmp:
+                    time_local = time.localtime(cur_time)
+                    dt = time.strftime("%Y-%m-%d %H:%M:%S", time_local)
+                    print('-- 时间:%s %s'%(dt, title_tmp))  # 获取当前时间
+                    # if ('人工智能' in title_tmp) or ('AI' in title_tmp) or ('ai' in title_tmp):
+                    if demo['data'][j]['title'] not in title:
+                        title.append(demo['data'][j]['title'])  # 获取新闻标题
+                        source_url.append(demo['data'][j]['source_url'])  # 获取新闻链接
+                        url_gzh = demo['data'][j]['source']
+                        source.append(url_gzh)  # 获取发布新闻的公众号
+                        print('title_data:', demo['data'][j]['title'])
+                        print("url_gzh:",url_gzh)
+                        if url_gzh not in media_url:
+                            media_url[url_gzh] = self.url + demo['data'][j]['media_url']  # 获取公众号链接
                 max_behot_time = str(demo['next']['max_behot_time'])  # 获取下一个链接的max_behot_time参数的值
 
-        print("终于获取完了")
         for index in range(len(title)):
             print('标题：', title[index])
             if 'https' not in source_url[index]:
@@ -170,4 +161,6 @@ class TouTiao:
 if __name__ == "__main__":
     tt = TouTiao()
     tt.main(tt.max_behot_time, tt.title, tt.source_url, tt.total_url, tt.source, tt.media_url)
+    print("终于获取完了，开始保存数据")
     tt.savedata(tt.title, tt.total_url, tt.source, tt.media_url)
+    print("始保存数据成功")

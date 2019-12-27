@@ -1,5 +1,9 @@
-# !usr/bin/python
 # coding: utf-8
+"""
+Author: 沙振宇
+Update Time: 2019-12-25
+Info: 爬虫——有bug尚未修复（未加as和cp参数）
+"""
 import xlrd
 import urllib.request
 from lxml import etree
@@ -73,19 +77,6 @@ def main():
             write_txt("data/"+str(i)+".txt", "")
 
 if __name__ == '__main__':
-    # main()
-    # write_txt("data/result/all.txt", "all")
+    main()
+    write_txt("data/result/all.txt", "all")
 
-    all = ""
-    for i in range(97):
-        test_dir = "data/"+str(i)+".txt"
-        isF = os.path.exists(test_dir)
-        print("isF:",isF)
-        if isF:
-            with open(test_dir, "r", encoding="utf-8") as fp:
-                cont = fp.read()
-                cont = cont.replace(" ", "")
-                cont = cont.replace("\n", "")
-                all = all + cont
-
-    write_txt("data/all.txt", all)

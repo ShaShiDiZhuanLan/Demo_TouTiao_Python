@@ -10,3 +10,14 @@
 
 ## 1.4、词频统计
 对这些新闻内容进行分词，然后词频统计。
+
+# 2、更新信息
+开发者：沙振宇（沙师弟专栏） <BR/>
+创建时间：2018-12-24<BR/>
+最后一次更新时间：2019-12-27<BR/>
+https://shazhenyu.blog.csdn.net <BR/>
+
+# 3、效果图
+ ![image](https://github.com/ShaShiDiZhuanLan/Demo_TouTiao_Python/blob/master/%E6%95%88%E6%9E%9C1.png)
+ ![image](https://github.com/ShaShiDiZhuanLan/Demo_TouTiao_Python/blob/master/%E6%95%88%E6%9E%9C2.jpg)
+ ![image](https://github.com/ShaShiDiZhuanLan/Demo_TouTiao_Python/blob/master/%E6%95%88%E6%9E%9C2.png)
